@@ -1,0 +1,7 @@
+{
+  "checkedAt": "2026-10-08T04:33:08.079Z",
+  "passed": true,
+  "networkInstall": false,
+  "scope": "解压ZIP、独立启动、登录、生成9题100分和公式资源可访问；无npm安装",
+  "node": "v24.21.0"
+}

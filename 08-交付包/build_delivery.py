@@ -12,7 +12,7 @@ for path in root.rglob('*'):
     if path.name == '.env' or '__pycache__' in rel.parts: continue
     if 'data' in rel.parts and path.name != '.gitkeep': continue
     files.append(path)
-for path in [out/'README.md',out/'课纲智评-开发历史.bundle']:
+for path in [out/'README.md',out/'build_delivery.py',out/'verify_delivery.mjs',out/'课纲智评-开发历史.bundle']:
     if path.exists(): files.append(path)
 files=sorted(files)
 records=[{'path':str(p.relative_to(root)).replace('\\','/'),'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in files]

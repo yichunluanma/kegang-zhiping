@@ -4,6 +4,20 @@
 
 本版从空目录原创开发，包含可运行应用、细粒度Git历史、复现指南、技术文档、测试记录和演示脚本。**这是第一版，不是已经满足全部条件的最终参赛提交包。**
 
+## 从GitHub获取并运行
+
+仓库：`yichunluanma/kegang-zhiping`。请使用Git克隆，以保留完整演进历史：
+
+```powershell
+git clone https://github.com/yichunluanma/kegang-zhiping.git
+Set-Location -LiteralPath 'kegang-zhiping'
+.\启动课纲智评.cmd
+```
+
+需要Node.js 24或更新版本。Git仓库不包含node_modules，首次启动会运行npm安装固定依赖，需要联网；已安装依赖后，模板演示模式可离线使用。GitHub的“Download ZIP”只提供所选版本的文件，不包含Git历史。
+
+以下文件仅在本地交付目录提供：离线运行ZIP、Git历史bundle、自动生成的文件校验清单。它们未作为源码文件提交。真实模型密钥、运行数据库、学生作答数据及日志均排除在Git仓库之外。
+
 ## 立即体验
 
 1. 双击本目录的 **启动课纲智评.cmd**。本机已安装依赖；新电脑需安装Node.js 24或更新版本。

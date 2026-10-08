@@ -73,7 +73,11 @@ const server = http.createServer(async (req, res) => {
       res.setHeader('Set-Cookie', `teacher=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200`);
       return json(res, 200, { ok: true });
     }
-    if (path === '/api/logout' && method === 'POST') { res.setHeader('Set-Cookie', 'teacher=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0'); return json(res, 200, { ok: true }); }
+    if (path === '/api/logout' && method === 'POST') {
+      const token = req.headers.cookie?.split(';').map(s => s.trim()).find(s => s.startsWith('teacher='))?.slice(8);
+      if (token) sessions.delete(token);
+      res.setHeader('Set-Cookie', 'teacher=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0'); return json(res, 200, { ok: true });
+    }
     const student = path.match(/^\/api\/exam\/([\w-]+)$/);
     if (student && method === 'GET') { const { paper } = getExam(student[1]); return json(res, 200, publicPaper(paper)); }
     const submit = path.match(/^\/api\/exam\/([\w-]+)\/submit$/);

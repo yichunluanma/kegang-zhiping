@@ -44,5 +44,7 @@ test('HTTP端到端：认证、生成、编辑、发布隔离、提交、复核�
     cookie = (await request('/api/login', { password: 'http-test-secret' })).res.headers.get('set-cookie').split(';')[0];
     const report = (await request(`/api/exams/${exam.id}/report`)).data; assert.equal(report.attempts[0].summary.score, 98);
     assert.equal((await request('/api/config')).data.AI_API_KEY, undefined);
+    assert.equal((await request('/api/logout', {})).res.status, 200);
+    assert.equal((await request('/api/papers')).res.status, 401, '退出后旧Cookie不能继续访问教师接口');
   } finally { await stop(); await rm(dir, { recursive: true, force: true }); }
 });

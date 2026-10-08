@@ -10,6 +10,7 @@ for path in root.rglob('*'):
     rel=path.relative_to(root)
     if rel.parts[0] not in {'01-应用源码','02-开发过程记录','03-技术文档','04-演示视频材料','05-测试与验证','06-报名与提交清单','07-课程样例'} and str(rel) not in {'README.md','启动课纲智评.cmd','停止课纲智评.cmd','.gitignore','.gitattributes'}: continue
     if path.name == '.env' or '__pycache__' in rel.parts: continue
+    if 'node_modules' in rel.parts and '.bin' in rel.parts: continue  # unused npm CLI wrappers, including PowerShell shims
     if 'data' in rel.parts and path.name != '.gitkeep': continue
     files.append(path)
 for path in [out/'README.md',out/'build_delivery.py',out/'verify_delivery.mjs',out/'课纲智评-开发历史.bundle']:

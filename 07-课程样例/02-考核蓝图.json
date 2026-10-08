@@ -1,0 +1,64 @@
+{
+  "title": "人工智能基础 · 分类模型评价",
+  "total": 100,
+  "objectives": [
+    {
+      "id": "O1",
+      "name": "概念辨析",
+      "source": "理解混淆矩阵中 TP、FP、FN、TN 的含义，区分准确率、精确率和召回率。"
+    },
+    {
+      "id": "O2",
+      "name": "指标计算",
+      "source": "能根据混淆矩阵计算准确率、精确率、召回率和 F1 值。"
+    },
+    {
+      "id": "O3",
+      "name": "职业情境选择",
+      "source": "能在工厂缺陷检测、垃圾邮件识别等职业情境中选择合适的评价指标。"
+    },
+    {
+      "id": "O4",
+      "name": "业务影响分析",
+      "source": "能解释漏检和误报的业务影响，并提出模型评价与改进建议。"
+    }
+  ],
+  "plans": [
+    {
+      "type": "choice",
+      "count": 2,
+      "score": 10,
+      "objectiveId": "O1",
+      "level": "easy"
+    },
+    {
+      "type": "judge",
+      "count": 2,
+      "score": 5,
+      "objectiveId": "O1",
+      "level": "easy"
+    },
+    {
+      "type": "number",
+      "count": 2,
+      "score": 15,
+      "objectiveId": "O2",
+      "level": "medium"
+    },
+    {
+      "type": "choice",
+      "count": 2,
+      "score": 10,
+      "objectiveId": "O3",
+      "level": "medium"
+    },
+    {
+      "type": "short",
+      "count": 1,
+      "score": 20,
+      "objectiveId": "O4",
+      "level": "hard"
+    }
+  ],
+  "note": "模板演示：不调用大模型。支持“增加计算题”示例指令；其他意图请手动编辑蓝图或启用模型。"
+}

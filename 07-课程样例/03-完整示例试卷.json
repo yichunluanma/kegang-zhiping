@@ -1,0 +1,226 @@
+{
+  "blueprint": {
+    "title": "人工智能基础 · 分类模型评价",
+    "total": 100,
+    "objectives": [
+      {
+        "id": "O1",
+        "name": "概念辨析",
+        "source": "理解混淆矩阵中 TP、FP、FN、TN 的含义，区分准确率、精确率和召回率。"
+      },
+      {
+        "id": "O2",
+        "name": "指标计算",
+        "source": "能根据混淆矩阵计算准确率、精确率、召回率和 F1 值。"
+      },
+      {
+        "id": "O3",
+        "name": "职业情境选择",
+        "source": "能在工厂缺陷检测、垃圾邮件识别等职业情境中选择合适的评价指标。"
+      },
+      {
+        "id": "O4",
+        "name": "业务影响分析",
+        "source": "能解释漏检和误报的业务影响，并提出模型评价与改进建议。"
+      }
+    ],
+    "plans": [
+      {
+        "type": "choice",
+        "count": 2,
+        "score": 10,
+        "objectiveId": "O1",
+        "level": "easy"
+      },
+      {
+        "type": "judge",
+        "count": 2,
+        "score": 5,
+        "objectiveId": "O1",
+        "level": "easy"
+      },
+      {
+        "type": "number",
+        "count": 2,
+        "score": 15,
+        "objectiveId": "O2",
+        "level": "medium"
+      },
+      {
+        "type": "choice",
+        "count": 2,
+        "score": 10,
+        "objectiveId": "O3",
+        "level": "medium"
+      },
+      {
+        "type": "short",
+        "count": 1,
+        "score": 20,
+        "objectiveId": "O4",
+        "level": "hard"
+      }
+    ],
+    "note": "模板演示：不调用大模型。支持“增加计算题”示例指令；其他意图请手动编辑蓝图或启用模型。"
+  },
+  "questions": [
+    {
+      "id": "Q1",
+      "type": "choice",
+      "score": 10,
+      "objectiveId": "O1",
+      "level": "easy",
+      "formula": "",
+      "stem": "TP表示什么？",
+      "options": [
+        "实际为正类且预测为正类",
+        "实际为负类且预测为正类",
+        "实际为正类且预测为负类",
+        "实际为负类且预测为负类"
+      ],
+      "answer": "A",
+      "explanation": "TP为真正例。"
+    },
+    {
+      "id": "Q2",
+      "type": "choice",
+      "score": 10,
+      "objectiveId": "O1",
+      "level": "easy",
+      "formula": "",
+      "stem": "哪一个指标回答“被模型判为正类的样本中，有多少确实是正类”？",
+      "options": [
+        "召回率",
+        "准确率",
+        "精确率",
+        "样本数量"
+      ],
+      "answer": "C",
+      "explanation": "精确率的分母是所有预测正类TP+FP。"
+    },
+    {
+      "id": "Q3",
+      "type": "judge",
+      "score": 5,
+      "objectiveId": "O1",
+      "level": "easy",
+      "formula": "",
+      "stem": "只要准确率高，缺陷检测模型就一定适合上线。",
+      "answer": "false",
+      "explanation": "必须结合类别分布、缺陷召回率和业务成本判断。"
+    },
+    {
+      "id": "Q4",
+      "type": "judge",
+      "score": 5,
+      "objectiveId": "O1",
+      "level": "easy",
+      "formula": "",
+      "stem": "在同一混淆矩阵中，召回率分母是TP+FN。",
+      "answer": "true",
+      "explanation": "TP+FN代表所有实际正类。"
+    },
+    {
+      "id": "Q5",
+      "type": "number",
+      "score": 15,
+      "objectiveId": "O2",
+      "level": "medium",
+      "formula": "P=\\frac{TP}{TP+FP}",
+      "stem": "某生产线以“缺陷”为正类，检测结果为TP=38、FP=6、FN=9、TN=49。计算精确率，填写0–1之间的小数，保留三位小数。",
+      "answer": 0.8636363636363636,
+      "tolerance": 0.001,
+      "explanation": "精确率=38/44≈0.864。允许绝对误差0.001。"
+    },
+    {
+      "id": "Q6",
+      "type": "number",
+      "score": 15,
+      "objectiveId": "O2",
+      "level": "medium",
+      "formula": "R=\\frac{TP}{TP+FN}",
+      "stem": "某生产线以“缺陷”为正类，检测结果为TP=41、FP=7、FN=10、TN=51。计算召回率，填写0–1之间的小数，保留三位小数。",
+      "answer": 0.803921568627451,
+      "tolerance": 0.001,
+      "explanation": "召回率=41/51≈0.804。允许绝对误差0.001。"
+    },
+    {
+      "id": "Q7",
+      "type": "choice",
+      "score": 10,
+      "objectiveId": "O3",
+      "level": "medium",
+      "formula": "",
+      "stem": "工厂希望尽量减少缺陷产品漏检，应优先关注哪一指标？",
+      "options": [
+        "样本总量",
+        "缺陷类别召回率",
+        "预测耗时",
+        "训练轮数"
+      ],
+      "answer": "B",
+      "explanation": "漏检对应FN；提高召回率有助于减少漏检，仍需同时关注误报成本。"
+    },
+    {
+      "id": "Q8",
+      "type": "choice",
+      "score": 10,
+      "objectiveId": "O3",
+      "level": "medium",
+      "formula": "",
+      "stem": "垃圾邮件过滤系统希望尽量避免正常邮件被拦截，应关注被拦截邮件的哪一指标？",
+      "options": [
+        "召回率",
+        "特征数量",
+        "精确率",
+        "批大小"
+      ],
+      "answer": "C",
+      "explanation": "提高垃圾邮件类别精确率，意味着被拦截邮件中真实垃圾邮件占比更高。"
+    },
+    {
+      "id": "Q9",
+      "type": "short",
+      "score": 20,
+      "objectiveId": "O4",
+      "level": "hard",
+      "formula": "",
+      "stem": "某缺陷检测模型准确率达98%，但仍有缺陷流入后续工序。请解释为什么不能只看准确率，并提出两项评价或改进建议。",
+      "answer": "类别不平衡可能导致准确率掩盖缺陷漏检。应查看混淆矩阵和缺陷召回率，结合误报与漏检成本调整阈值，并使用独立验证集检验效果。",
+      "rubric": [
+        {
+          "point": "解释类别不平衡或漏检问题",
+          "score": 6,
+          "keywords": [
+            "不平衡",
+            "漏检",
+            "少数类"
+          ]
+        },
+        {
+          "point": "提出召回率或混淆矩阵评价",
+          "score": 6,
+          "keywords": [
+            "召回",
+            "混淆矩阵",
+            "FN"
+          ]
+        },
+        {
+          "point": "提出可验证的改进建议",
+          "score": 8,
+          "keywords": [
+            "阈值",
+            "验证集",
+            "测试集",
+            "成本"
+          ]
+        }
+      ],
+      "explanation": "关键词匹配只用于辅助建议，不能识别否定、推理质量或替代表述，最终由教师复核。"
+    }
+  ],
+  "outline": "课程：高职《人工智能基础》\n章节：分类模型评价\n教学目标：\n1. 理解混淆矩阵中 TP、FP、FN、TN 的含义，区分准确率、精确率和召回率。\n2. 能根据混淆矩阵计算准确率、精确率、召回率和 F1 值。\n3. 能在工厂缺陷检测、垃圾邮件识别等职业情境中选择合适的评价指标。\n4. 能解释漏检和误报的业务影响，并提出模型评价与改进建议。\n教学边界：只考核二分类模型评价，不涉及模型训练、ROC 曲线推导和多分类指标。\n评价方式：概念理解、公式计算、职业情境判断、简短分析。",
+  "provider": "demo",
+  "seed": 1
+}

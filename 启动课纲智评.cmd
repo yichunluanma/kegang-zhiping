@@ -1,0 +1,3 @@
+@echo off
+chcp 65001 >nul
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp001-应用源码\scripts\start.ps1"

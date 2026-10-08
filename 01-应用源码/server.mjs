@@ -63,7 +63,14 @@ const server = http.createServer(async (req, res) => {
     insist([`127.0.0.1:${port}`, `localhost:${port}`].includes(req.headers.host), '不允许的主机名');
     if (!['GET', 'HEAD'].includes(req.method) && req.headers.origin) insist([`http://127.0.0.1:${port}`, `http://localhost:${port}`].includes(req.headers.origin), '禁止跨站请求');
     const url = new URL(req.url, `http://127.0.0.1:${port}`), path = url.pathname, method = req.method;
-    if (path === '/api/health') return json(res, 200, { ok: true, version: '0.1.0' });
+    if (path === '/api/health') return json(res, 200, { ok: true, version: '0.1.0', pid: process.pid });
+    if (path === '/api/local-stop' && method === 'POST') {
+      const launchToken = process.env.LOCAL_LAUNCH_TOKEN, receivedToken = req.headers['x-launch-token'];
+      if (!launchToken || typeof receivedToken !== 'string' || !secureEquals(launchToken, receivedToken)) return json(res, 401, { error: '启动器身份无效' });
+      json(res, 200, { ok: true });
+      setImmediate(() => server.close(() => { db.close(); process.exit(0); }));
+      return;
+    }
     if (path === '/api/config' && method === 'GET') return json(res, 200, { provider: provider(), loggedIn: Boolean(teacher(req)), sample: SAMPLE, intent: DEFAULT_INTENT, demoPassword: password === 'teacher-demo-2026' ? password : undefined });
     if (path === '/api/login' && method === 'POST') {
       limited(req, 'login', 8); const input = await body(req);

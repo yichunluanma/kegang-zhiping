@@ -1,0 +1,13 @@
+{
+  "checkedAt": "2026-10-08T13:05:37.5073012+08:00",
+  "scope": "真实CMD入口启动、停止、重启、重复启动及浏览器教师登录",
+  "passed": true,
+  "url": "http://127.0.0.1:3210",
+  "healthVersion": "0.1.0",
+  "httpStatus": 200,
+  "currentPid": 2256,
+  "powershellStartupFilesPresent": 0,
+  "startupOutput": "Application already running: http://127.0.0.1:3210\r\nOPEN_URL=http://127.0.0.1:3210",
+  "fireWallOrAntivirusSettingsChanged": false,
+  "antivirusDetectionSource": "用户反馈火绒清理旧start.ps1；未取得具体扫描报告"
+}

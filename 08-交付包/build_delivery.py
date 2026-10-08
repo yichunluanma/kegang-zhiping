@@ -8,7 +8,7 @@ files=[]
 for path in root.rglob('*'):
     if not path.is_file(): continue
     rel=path.relative_to(root)
-    if rel.parts[0] not in {'01-应用源码','02-开发过程记录','03-技术文档','04-演示视频材料','05-测试与验证','06-报名与提交清单','07-课程样例'} and str(rel) not in {'README.md','启动课纲智评.cmd','.gitignore','.gitattributes'}: continue
+    if rel.parts[0] not in {'01-应用源码','02-开发过程记录','03-技术文档','04-演示视频材料','05-测试与验证','06-报名与提交清单','07-课程样例'} and str(rel) not in {'README.md','启动课纲智评.cmd','停止课纲智评.cmd','.gitignore','.gitattributes'}: continue
     if path.name == '.env' or '__pycache__' in rel.parts: continue
     if 'data' in rel.parts and path.name != '.gitkeep': continue
     files.append(path)

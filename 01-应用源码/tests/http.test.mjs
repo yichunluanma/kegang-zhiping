@@ -10,7 +10,7 @@ import { SAMPLE, demoBlueprint } from '../lib/domain.mjs';
 test('HTTP端到端：认证、生成、编辑、发布隔离、提交、复核和持久化', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'zhiping-test-'));
   const port = 34000 + Math.floor(Math.random() * 20000), base = `http://127.0.0.1:${port}`;
-  const launch = () => spawn(process.execPath, [fileURLToPath(new URL('../server.mjs', import.meta.url))], { env: { ...process.env, PORT: String(port), DATA_DIR: dir, AI_API_KEY: '', TEACHER_PASSWORD: 'http-test-secret' }, stdio: ['ignore', 'pipe', 'pipe'] });
+  const launch = () => spawn(process.execPath, [fileURLToPath(new URL('../server.mjs', import.meta.url))], { env: { ...process.env, PORT: String(port), DATA_DIR: dir, AI_API_KEY: '', TEACHER_PASSWORD: 'http-test-secret', LOCAL_LAUNCH_TOKEN: 'launcher-test-secret' }, stdio: ['ignore', 'pipe', 'pipe'] });
   let proc = launch(), cookie = '';
   async function ready() { for (let i = 0; i < 80; i++) { try { if ((await fetch(base + '/api/health')).ok) return; } catch {} await new Promise(r => setTimeout(r, 100)); } throw new Error('测试服务未就绪'); }
   const request = async (path, data, method, auth = true) => {
@@ -46,5 +46,10 @@ test('HTTP端到端：认证、生成、编辑、发布隔离、提交、复核�
     assert.equal((await request('/api/config')).data.AI_API_KEY, undefined);
     assert.equal((await request('/api/logout', {})).res.status, 200);
     assert.equal((await request('/api/papers')).res.status, 401, '退出后旧Cookie不能继续访问教师接口');
+    assert.equal((await request('/api/local-stop', {})).res.status, 401, '教师Cookie不能替代启动器身份');
+    assert.equal((await fetch(base + '/api/local-stop', { method: 'POST', headers: { 'X-Launch-Token': 'wrong-token' } })).status, 401);
+    const shutdown = await fetch(base + '/api/local-stop', { method: 'POST', headers: { 'X-Launch-Token': 'launcher-test-secret' } });
+    assert.equal(shutdown.status, 200); await shutdown.json();
+    if (proc.exitCode === null) await new Promise((resolveExit, reject) => { const timer = setTimeout(() => reject(new Error('安全停止接口未关闭服务')), 3000); proc.once('exit', () => { clearTimeout(timer); resolveExit(); }); });
   } finally { await stop(); await rm(dir, { recursive: true, force: true }); }
 });

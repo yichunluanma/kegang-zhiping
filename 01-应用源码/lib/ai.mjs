@@ -13,10 +13,11 @@ export function buildPrompt(kind, input) {
   return [{ role: 'system', content: system }, { role: 'user', content: `${task}\n<资料JSON>\n${JSON.stringify(input)}\n</资料JSON>` }];
 }
 async function requestModel(messages) {
+  insist(typeof process.env.AI_MODEL === 'string' && process.env.AI_MODEL.trim(), '已设置密钥，但尚未设置AI_MODEL模型名称');
   const base = process.env.AI_BASE_URL || 'https://api.openai.com/v1';
   const url = new URL(base.replace(/\/$/, '') + '/chat/completions');
   insist(url.protocol === 'https:' || (url.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(url.hostname)), '模型接口必须使用HTTPS，或本机HTTP');
-  const res = await fetch(url, { method: 'POST', signal: AbortSignal.timeout(90000), headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.AI_API_KEY}` }, body: JSON.stringify({ model: process.env.AI_MODEL || '请在.env设置模型名称', temperature: 0.2, response_format: { type: 'json_object' }, messages }) });
+  const res = await fetch(url, { method: 'POST', signal: AbortSignal.timeout(90000), headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.AI_API_KEY}` }, body: JSON.stringify({ model: process.env.AI_MODEL, temperature: 0.2, response_format: { type: 'json_object' }, messages }) });
   if (!res.ok) throw new Error(`模型接口返回HTTP ${res.status}；请检查配置或稍后重试`);
   const raw = await res.json(), content = raw.choices?.[0]?.message?.content;
   insist(typeof content === 'string' && content.length <= 150000, '模型未返回可解析的内容');

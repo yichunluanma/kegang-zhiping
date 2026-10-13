@@ -1,0 +1,7 @@
+{
+  "checkedAt": "2026-10-13T04:59:45.815Z",
+  "passed": true,
+  "networkInstall": false,
+  "scope": "从含中文和空格的解压目录执行真实CMD入口，启动、重复启动、登录、生成9题100分、公式资源及停止通过；无需npm安装，无PowerShell入口",
+  "node": "v24.21.0"
+}

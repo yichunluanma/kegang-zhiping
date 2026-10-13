@@ -63,7 +63,7 @@ const server = http.createServer(async (req, res) => {
     insist([`127.0.0.1:${port}`, `localhost:${port}`].includes(req.headers.host), '不允许的主机名');
     if (!['GET', 'HEAD'].includes(req.method) && req.headers.origin) insist([`http://127.0.0.1:${port}`, `http://localhost:${port}`].includes(req.headers.origin), '禁止跨站请求');
     const url = new URL(req.url, `http://127.0.0.1:${port}`), path = url.pathname, method = req.method;
-    if (path === '/api/health') return json(res, 200, { ok: true, version: '0.1.0', pid: process.pid });
+    if (path === '/api/health') return json(res, 200, { ok: true, version: '0.2.0', pid: process.pid });
     if (path === '/api/local-stop' && method === 'POST') {
       const launchToken = process.env.LOCAL_LAUNCH_TOKEN, receivedToken = req.headers['x-launch-token'];
       if (!launchToken || typeof receivedToken !== 'string' || !secureEquals(launchToken, receivedToken)) return json(res, 401, { error: '启动器身份无效' });
@@ -71,7 +71,13 @@ const server = http.createServer(async (req, res) => {
       setImmediate(() => server.close(() => { db.close(); process.exit(0); }));
       return;
     }
-    if (path === '/api/config' && method === 'GET') return json(res, 200, { provider: provider(), loggedIn: Boolean(teacher(req)), sample: SAMPLE, intent: DEFAULT_INTENT, demoPassword: password === 'teacher-demo-2026' ? password : undefined });
+    const manualPath = resolve(root, '../09-使用说明/课纲智评-v0.2-图文使用说明.pptx');
+    if (path === '/api/manual' && method === 'GET') {
+      const bytes = await readFile(manualPath);
+      res.writeHead(200, { 'Content-Type': 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'Content-Disposition': "attachment; filename*=UTF-8''" + encodeURIComponent('课纲智评-v0.2-图文使用说明.pptx'), 'Cache-Control': 'no-cache' });
+      return res.end(bytes);
+    }
+    if (path === '/api/config' && method === 'GET') return json(res, 200, { provider: provider(), loggedIn: Boolean(teacher(req)), sample: SAMPLE, intent: DEFAULT_INTENT, manualAvailable: existsSync(manualPath), demoPassword: password === 'teacher-demo-2026' ? password : undefined });
     if (path === '/api/login' && method === 'POST') {
       limited(req, 'login', 8); const input = await body(req);
       if (!secureEquals(String(input.password || ''), password)) { const e = new Error('教师密码不正确'); e.status = 401; throw e; }
@@ -176,5 +182,5 @@ const server = http.createServer(async (req, res) => {
     json(res, status, { error: e.code === 'ENOENT' ? '页面不存在' : e.name === 'TimeoutError' ? '模型请求超时，请稍后重试' : e.message || '请求失败' });
   }
 });
-server.listen(port, '127.0.0.1', () => console.log(`课纲智评 v0.1.0 · ${provider() === 'demo' ? '模板演示' : '真实模型'} · http://127.0.0.1:${port}`));
+server.listen(port, '127.0.0.1', () => console.log(`课纲智评 v0.2.0 · ${provider() === 'demo' ? '模板演示' : '真实模型'} · http://127.0.0.1:${port}`));
 process.on('SIGTERM', () => server.close(() => { db.close(); process.exit(); }));

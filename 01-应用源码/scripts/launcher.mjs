@@ -20,7 +20,7 @@ if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('PORT m
 let url = `http://127.0.0.1:${port}`;
 const stateFile = resolve(data, 'launcher-state.json');
 async function healthy() {
-  try { const response = await fetch(`${url}/api/health`, { signal: AbortSignal.timeout(1200) }); const result = await response.json(); return response.ok && result.ok && result.version === '0.1.0' ? result : null; }
+  try { const response = await fetch(`${url}/api/health`, { signal: AbortSignal.timeout(1200) }); const result = await response.json(); return response.ok && result.ok && ['0.1.0', '0.2.0'].includes(result.version) ? result : null; }
   catch { return null; }
 }
 mkdirSync(data, { recursive: true });

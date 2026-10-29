@@ -1,9 +1,10 @@
 import { spawn } from 'node:child_process';
-import { readFileSync, existsSync, mkdirSync, openSync, closeSync, writeFileSync, unlinkSync } from 'node:fs';
+import { readFileSync, existsSync, mkdirSync, openSync, closeSync, writeFileSync, unlinkSync, appendFileSync } from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
+import { openBrowser } from './browser-launch.mjs';
 
 const source = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 if (Number(process.versions.node.split('.')[0]) < 24) throw new Error('Please install Node.js 24 or newer.');
@@ -69,7 +70,12 @@ if (process.argv.includes('--stop')) {
   console.log(`OPEN_URL=${url}`);
 }
 if (!process.argv.includes('--stop') && !process.argv.includes('-NoBrowser') && !process.argv.includes('--no-browser')) {
-  const browser = spawn(process.env.ComSpec || 'cmd.exe', ['/d', '/c', `start "" "${url}"`], { windowsHide: true, windowsVerbatimArguments: true, stdio: 'ignore' });
-  browser.on('error', () => console.log(`Please open ${url} in your browser.`));
-  browser.unref();
+  const browser = await openBrowser(url + '/');
+  appendFileSync(resolve(data, 'browser-launch.log'), JSON.stringify({ at: new Date().toISOString(), url, ...browser }) + '\n');
+  if (browser.opened) console.log(`Browser launch requested (${browser.method}): ${url}`);
+  else {
+    console.log(`\n服务已经启动，但无法自动打开浏览器。\n请把下面的网址复制到浏览器地址栏：\n${url}\n`);
+    console.log(`诊断日志：${resolve(data, 'browser-launch.log')}`);
+    process.exitCode = 2;
+  }
 }

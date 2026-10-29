@@ -12,8 +12,15 @@ if not exist "node_modules\katex\package.json" (
 node scripts\launcher.mjs %*
 set "APP_EXIT=%ERRORLEVEL%"
 popd
+if "%APP_EXIT%"=="2" goto browser_manual
 if not "%APP_EXIT%"=="0" goto failed
 exit /b 0
+:browser_manual
+echo.
+echo 服务已启动。请使用上面的网址手动打开页面。
+echo 按任意键关闭此提示窗口，服务将继续运行。
+pause >nul
+exit /b 2
 :missing_node
 echo Please install Node.js 24 or newer, then try again.
 :failed

@@ -6,3 +6,5 @@ tmp/
 *.zip
 *.bundle
 /08-交付包/文件校验清单.json
+~$*
+/KGZP/
